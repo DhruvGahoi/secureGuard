@@ -1,25 +1,71 @@
-import { Group, Text, ThemeIcon, Checkbox, Badge, ActionIcon, Divider } from "@mantine/core";
-import { IconDeviceMobile, IconServer, IconDeviceLaptop, IconAlertTriangle, IconCircleCheck, IconChevronRight} from "@tabler/icons-react";
-import { Link } from "react-router-dom";
+// src/components/DeviceRow.tsx
 
-const DeviceRow = ({ device }: { device: any }) => {
-    const getIcon = (type: string) => {
-        switch(type) {
-            case 'mobile': return <IconDeviceMobile size={20} />;
-            case 'server': return <IconServer size={20} />;
-            default: return <IconDeviceLaptop size={20} />;
+import { Link } from "react-router-dom";
+import { Group, Checkbox, ThemeIcon, Text, Badge, ActionIcon, Divider } from "@mantine/core";
+import { IconDeviceLaptop, IconDeviceMobile, IconServer, IconChevronRight, IconAlertTriangle, IconCircleCheck } from "@tabler/icons-react";
+
+// Helper functions (omitted for brevity, assume they are correct)
+const getIcon = (type: string) => {
+    switch(type) {
+        case 'mobile': return <IconDeviceMobile size={20} />;
+        case 'server': return <IconServer size={20} />;
+        default: return <IconDeviceLaptop size={20} />;
+    }
+}
+
+const getStatusColor = (status: 'online' | 'warning' | 'offline') => {
+    if (status === 'online') return { color: 'cyan', text: 'ONLINE' };
+    if (status === 'warning') return { color: 'yellow', text: 'WARNING' };
+    return { color: 'gray', text: 'OFFLINE' };
+}
+
+// UPDATED INTERFACE
+interface DeviceRowProps {
+    device: {
+        id: number;
+        name: string;
+        ip: string;
+        time: string;
+        type: string;
+        violations: number;
+        sensitive: number;
+        status: 'online' | 'warning' | 'offline'; 
+    },
+    isSelected: boolean;
+    onToggle: () => void;
+}
+
+const DeviceRow = ({ device, isSelected, onToggle }: DeviceRowProps) => {
+    const statusInfo = getStatusColor(device.status);
+
+    // Handler for the Group click, which should only run if the event didn't start on a control
+    const handleRowClick = (e: React.MouseEvent) => {
+        // Prevent row selection if the click originated from an interactive element (like the arrow)
+        if (!(e.target as HTMLElement).closest('a, button, input')) {
+            onToggle();
         }
-    }
-    const getStatusColor = (status: string) => {
-        if (status === 'online') return 'teal';
-        if (status === 'warning') return 'yellow';
-        return 'gray';
-    }
+    };
 
     return (
         <>
-        <Group py="sm" wrap="nowrap" align="center">
-            <Checkbox color="gray" size="sm" ml="xs" />
+        <Group py="sm" wrap="nowrap" align="center" 
+               // Group style remains, but we add a specific click handler
+               style={{ cursor: 'pointer', backgroundColor: isSelected ? 'var(--mantine-color-dark-6)' : undefined }}
+               onClick={handleRowClick} 
+        >
+            {/* CHECKBOX: Handles selection logic directly and prevents bubbling */}
+            <Checkbox 
+                color="cyan" 
+                size="sm" 
+                ml="xs" 
+                checked={isSelected}
+                // FIX: Toggle selection directly and stop propagation
+                onClick={(e) => {
+                    e.stopPropagation(); 
+                    onToggle(); 
+                }} 
+            />
+            
             <ThemeIcon size={40} radius="md" color="dark.4" variant="filled">
                 {getIcon(device.type)}
             </ThemeIcon>
@@ -49,27 +95,20 @@ const DeviceRow = ({ device }: { device: any }) => {
 
             <div style={{ width: 100, display: 'flex', justifyContent: 'flex-end' }}>
                 <Badge 
-                    color={getStatusColor(device.status)} 
+                    color={statusInfo.color} 
                     variant="light" 
                     size="sm" 
-                    radius="sm"
+                    radius="lg"
                     leftSection={device.status === 'warning' ? <IconAlertTriangle size={10} /> : <IconCircleCheck size={10} />}
                 >
-                    {device.status.toUpperCase()}
+                    {statusInfo.text}
                 </Badge>
             </div>
 
-            <ActionIcon 
-            variant="subtle" 
-            color="gray" 
-            component={Link} // <-- FIX: Use react-router-dom's Link component
-            to={`/device/dev-001`} // <-- FIX: Use a mock ID based on your route structure
-            // NOTE: Since your DeviceDetail uses "dev-001", 
-            // you might want a better unique identifier from your devicesData.
-            // For now, let's assume the ID you need to pass is 'dev-' plus the device.id.
-        >
-            <IconChevronRight size={16} />
-        </ActionIcon>
+            {/* Redirection Arrow (Must stop propagation to allow click-through) */}
+            <ActionIcon variant="subtle" color="gray" component={Link} to={`/device/${device.id}`} onClick={(e) => e.stopPropagation()}>
+                <IconChevronRight size={16} />
+            </ActionIcon>
         </Group>
         <Divider color="dark.5" />
         </>

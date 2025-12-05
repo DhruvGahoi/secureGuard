@@ -20,7 +20,7 @@ const StatCard = ({ title, value, icon, color = "blue" }: StatCardProps) => {
                     <Text size="xs" c="dimmed" fw={500} mb={5}>
                         {title}
                     </Text>
-                    <Text fw={700} c="white" style={{ fontSize: rem(24), lineHeight: 1 }}>
+                    <Text fw={300} c="white" style={{ fontSize: rem(20), lineHeight: 1 }}>
                         {value}
                     </Text>
                 </div>

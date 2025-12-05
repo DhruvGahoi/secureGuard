@@ -1,3 +1,5 @@
+// src/pages/Dashboard.tsx
+
 import { useState } from "react";
 import {
   IconDeviceDesktop,
@@ -7,6 +9,7 @@ import {
   IconChevronRight,
   IconDownload,
   IconDeviceLaptop, 
+  IconAlertTriangle as IconAlertTriangleTabler // Renaming to avoid conflict
 } from '@tabler/icons-react';
 import {
   Box,
@@ -23,23 +26,58 @@ import {
   Divider,
   Button,
 } from "@mantine/core";
-
+import { useDisclosure } from '@mantine/hooks'; // Hook for modal state
 
 import Header from "../components/Header"; 
 import StatCard from "../components/StatCard";
 import DeviceRow from "../components/DeviceRow"; 
+import DeleteConfirmationModal from "../components/DeleteConfirmationModal"; // Imported Modal
 
 const devicesData = [
-    { id: 1, name: "MacBook Pro - John", ip: "192.168.1.105", time: "Just now", type: "laptop", violations: 12, sensitive: 156, status: "online" },
-    { id: 2, name: "Windows Workstation - Sarah", ip: "192.168.1.112", time: "2 min ago", type: "desktop", violations: 3, sensitive: 89, status: "online" },
-    { id: 3, name: "Linux Server - DevOps", ip: "192.168.1.50", time: "1 hour ago", type: "server", violations: 0, sensitive: 234, status: "offline" },
-    { id: 4, name: "iPhone - Marketing Lead", ip: "192.168.1.201", time: "15 min ago", type: "mobile", violations: 7, sensitive: 45, status: "warning" },
-    { id: 5, name: "Windows Laptop - Finance", ip: "192.168.1.118", time: "Just now", type: "laptop", violations: 1, sensitive: 312, status: "online" },
+    { id: 1, name: "MacBook Pro - John", ip: "192.168.1.105", time: "Just now", type: "laptop", violations: 12, sensitive: 156, status: "online" as const},
+    { id: 2, name: "Windows Workstation - Sarah", ip: "192.168.1.112", time: "2 min ago", type: "desktop", violations: 3, sensitive: 89, status: "online" as const},
+    { id: 3, name: "Linux Server - DevOps", ip: "192.168.1.50", time: "1 hour ago", type: "server", violations: 0, sensitive: 234, status: "offline" as const},
+    { id: 4, name: "iPhone - Marketing Lead", ip: "192.168.1.201", time: "15 min ago", type: "mobile", violations: 7, sensitive: 45, status: "warning" as const},
+    { id: 5, name: "Windows Laptop - Finance", ip: "192.168.1.118", time: "Just now", type: "laptop", violations: 1, sensitive: 312, status: "online" as const},
 ];
 
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState<"devices" | "install">("devices");
+  
+  // STATE MANAGEMENT FOR SELECTION AND DELETION
+  const [selectedDeviceIds, setSelectedDeviceIds] = useState<number[]>([]);
+  const [modalOpened, { open: openModal, close: closeModal }] = useDisclosure(false);
+  
+  const allDeviceIds = devicesData.map(device => device.id);
+  const selectedCount = selectedDeviceIds.length;
+  const allSelected = selectedCount === allDeviceIds.length && allDeviceIds.length > 0;
+  const showDeleteButton = selectedCount > 0;
+
+  // HANDLERS FOR SELECTION
+  const toggleAllDevices = () => {
+    if (allSelected) {
+      setSelectedDeviceIds([]);
+    } else {
+      setSelectedDeviceIds(allDeviceIds);
+    }
+  };
+
+  const toggleDevice = (id: number) => {
+    setSelectedDeviceIds(prev => 
+      prev.includes(id) 
+        ? prev.filter(deviceId => deviceId !== id) 
+        : [...prev, id]
+    );
+  };
+  
+  // HANDLER FOR MODAL CONFIRMATION
+  const handleDeviceDeletion = () => {
+      console.log(`Confirmed deletion of ${selectedCount} devices.`);
+      // Logic to actually delete selectedDeviceIds goes here
+      setSelectedDeviceIds([]);
+      closeModal();
+  };
 
   const innerPadding = 'lg'; 
   const getDeviceIcon = () => <IconDeviceLaptop size={20} />; 
@@ -51,11 +89,19 @@ const Dashboard = () => {
         backgroundColor: "var(--mantine-color-dark-8)", 
         color: "white",
         paddingBottom: 48,
-        // FIX: Set up root as a vertical flex container
         display: 'flex', 
         flexDirection: 'column',
       }}
     >
+      {/* 1. DELETE CONFIRMATION MODAL */}
+      <DeleteConfirmationModal
+          opened={modalOpened}
+          onClose={closeModal}
+          onConfirm={handleDeviceDeletion}
+          selectedCount={selectedCount}
+          type="device"
+      />
+
       <Header />
 
       <Box 
@@ -64,12 +110,13 @@ const Dashboard = () => {
         style={{ 
             width: '100%', 
             maxWidth: '100vw', 
-            flexGrow: 1, // Allow this block to fill vertical space
+            flexGrow: 1, 
             display: 'flex', 
             flexDirection: 'column', 
         }}
       > 
         
+        {/* Stat Cards */}
         <SimpleGrid
           cols={{ base: 1, sm: 2, lg: 4 }}
           spacing="lg"
@@ -81,6 +128,7 @@ const Dashboard = () => {
           <StatCard title="Sensitive Files" value="1849" icon={<IconShieldLock size={24} />} color="green" />
         </SimpleGrid>
 
+        {/* Tabs Bar */}
         <Paper
             radius="md" 
             p={rem(4)} 
@@ -94,11 +142,12 @@ const Dashboard = () => {
                 value={activeTab} 
                 onChange={(v) => setActiveTab(v as "devices" | "install")}
                 color="cyan" 
-                variant="default" 
+                variant="pills" 
+                radius="md"
             >
                 <Tabs.List 
                     style={{ 
-                        borderBottomColor: 'var(--mantine-color-dark-4)', 
+                        borderBottom: 'none', 
                         padding: 0, 
                         margin: 0 
                     }}
@@ -112,6 +161,7 @@ const Dashboard = () => {
 
         <Box style={{ flexGrow: 1, display: 'flex' }}> 
             
+            {/* Devices Tab Content */}
             {activeTab === 'devices' && (
                 <Paper 
                     withBorder 
@@ -120,16 +170,31 @@ const Dashboard = () => {
                     style={{ 
                         backgroundColor: 'var(--mantine-color-dark-7)', 
                         borderColor: 'var(--mantine-color-dark-4)',
-                        flexGrow: 1, // FIX: Makes this Paper stretch vertically
+                        flexGrow: 1,
                     }}
                 >
+                    {/* Header Row with Delete Button */}
                     <Group justify="space-between" mb="lg">
                         <div>
                             <Text size="lg" fw={700} c="white">Connected Devices</Text>
                             <Text size="sm" c="dimmed">Monitor and manage all devices with DLP agents installed</Text>
                         </div>
+                        
+                        {/* CONDITIONAL DELETE BUTTON */}
+                        {showDeleteButton && (
+                            <Button 
+                                variant="filled" 
+                                color="red"
+                                radius="md"
+                                onClick={openModal} // Opens the delete confirmation modal
+                                leftSection={<IconAlertTriangleTabler size={14} />}
+                            >
+                                Delete Selected ({selectedCount})
+                            </Button>
+                        )}
                     </Group>
 
+                    {/* Select All Row */}
                     <Paper 
                         withBorder 
                         p="xs" 
@@ -138,15 +203,28 @@ const Dashboard = () => {
                         style={{ backgroundColor: 'var(--mantine-color-dark-6)', borderColor: 'var(--mantine-color-dark-4)' }}
                     >
                         <Group gap="xs">
-                            <Checkbox color="gray" size="sm" ml={4} />
+                            <Checkbox 
+                                color="cyan" 
+                                size="sm" 
+                                ml={4}
+                                checked={allSelected}
+                                onChange={toggleAllDevices}
+                                indeterminate={selectedCount > 0 && !allSelected}
+                            />
                             <Text size="sm" c="dimmed" ml={8}>Select all on this page</Text>
                         </Group>
                     </Paper>
 
-                    {/* The rows need to be in a stacking container that also stretches vertically */}
+                    {/* The Device Rows */}
                     <Stack gap={0} style={{ flexGrow: 1 }}> 
                         {devicesData.map((device) => (
-                            <DeviceRow key={device.id} device={device} />
+                            <DeviceRow 
+                                key={device.id} 
+                                device={device} 
+                                // Pass selection state and toggle handler to the row
+                                isSelected={selectedDeviceIds.includes(device.id)}
+                                onToggle={() => toggleDevice(device.id)}
+                            />
                         ))}
                     </Stack>
 
@@ -166,7 +244,7 @@ const Dashboard = () => {
             {activeTab === 'install' && (
                 <Stack 
                     gap="xl"
-                    style={{ flexGrow: 1 }} // FIX: Makes this Stack stretch vertically
+                    style={{ flexGrow: 1 }}
                 >
                     <Paper 
                         withBorder 
@@ -240,7 +318,7 @@ const Dashboard = () => {
                                     { num: 3, title: "Enter enrollment key", desc: "Use your organization enrollment key to connect the agent" }
                                 ] as const).map(step => (
                                     <Group key={step.num} style={{ alignItems: "flex-start" }}>
-                                        <ThemeIcon color="teal" radius="xl" size="lg">
+                                        <ThemeIcon color="cyan" radius="xl" size="lg">
                                             <Text size="sm" fw={700}>{step.num}</Text>
                                         </ThemeIcon>
                                         <div>
@@ -260,7 +338,7 @@ const Dashboard = () => {
                                 p="md" 
                                 style={{ backgroundColor: 'var(--mantine-color-dark-6)', border: '1px solid var(--mantine-color-dark-4)' }}
                             >
-                                <Text fw={600} style={{ fontFamily: 'monospace' }}>SG-ENR-7X9K2M4N8P1Q3R5T</Text>
+                                <Text c="white" fw={300} style={{ fontFamily: 'monospace' }}>SG-ENR-7X9K2M4N8P1Q3R5T</Text>
                             </Paper>
                         </Stack>
                     </Paper>

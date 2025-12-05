@@ -25,10 +25,10 @@ const SummaryCard = ({
         borderColor: 'var(--mantine-color-dark-4)' 
       }}
     >
-      <Text size="sm" c="dimmed" fw={500} mb={rem(8)}>
+      <Text size="sm" c="dimmed" fw={500} mb={rem(16)}>
         {title}
       </Text>
-      <Text size="32px" fw={700} c={valueColor} style={{ lineHeight: 1 }}>
+      <Text size="20px" fw={700} c={valueColor} style={{ lineHeight: 1 }}>
         {value}
       </Text>
       <Text size="xs" c="dimmed" mt={rem(8)}>
