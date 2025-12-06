@@ -1,18 +1,20 @@
-import { IconBell, IconSettings, IconShieldLock, IconUser, IconLogout } from "@tabler/icons-react";
+import { IconBell, IconSettings, IconUser, IconLogout, IconShield } from "@tabler/icons-react";
 import { Box, Container, Group, Text, Avatar, ActionIcon, Menu, rem } from "@mantine/core";
 
 const Header = () => {
     return (
         <Box 
+        
             style={{ 
                 backgroundColor: 'var(--mantine-color-dark-8)', 
                 borderBottom: '1px solid var(--mantine-color-dark-4)',
+                width: '100%'
             }}
         >
             <Container size="xl" py="xs">
                 <Group justify="space-between" h={50}>
                     <Group gap="xs">
-                        <IconShieldLock size={26} color="cyan" />
+                        <IconShield size={26} color="cyan" />
                         <Text size="xl" fw={700} c="white">SecureGuard</Text>
                     </Group>
 

@@ -13,7 +13,7 @@ const StatCard = ({ title, value, icon, color = "blue" }: StatCardProps) => {
             padding="lg" 
             radius="md" 
             withBorder 
-            style={{ backgroundColor: 'var(--mantine-color-dark-7)', borderColor: 'var(--mantine-color-dark-4)' }}
+            style={{ backgroundColor: 'var(--mantine-color-dark-7)', borderColor: 'var(--mantine-color-dark-4)', }}
         >
             <Group justify="space-between" align="flex-start">
                 <div>

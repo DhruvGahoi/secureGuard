@@ -28,7 +28,7 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from '@mantine/hooks'; // Hook for modal state
 
-import Header from "../components/Header"; 
+// import Header from "../components/Header"; 
 import StatCard from "../components/StatCard";
 import DeviceRow from "../components/DeviceRow"; 
 import DeleteConfirmationModal from "../components/DeleteConfirmationModal"; // Imported Modal
@@ -83,14 +83,17 @@ const Dashboard = () => {
   const getDeviceIcon = () => <IconDeviceLaptop size={20} />; 
 
   return (
+    <>
+    {/* <Header /> */}
     <Box
       style={{
         minHeight: "100vh",
-        backgroundColor: "var(--mantine-color-dark-8)", 
-        color: "white",
+        // backgroundColor: "var(--mantine-color-dark-8)", 
+        // color: "white",
         paddingBottom: 48,
-        display: 'flex', 
-        flexDirection: 'column',
+        width: "70%",
+        // display: 'flex', 
+        // flexDirection: 'column',
       }}
     >
       {/* 1. DELETE CONFIRMATION MODAL */}
@@ -102,14 +105,14 @@ const Dashboard = () => {
           type="device"
       />
 
-      <Header />
+      
 
       <Box 
         px={innerPadding} 
         pt="lg" 
         style={{ 
-            width: '100%', 
-            maxWidth: '100vw', 
+            // width: '100%', 
+            // maxWidth: '100vw', 
             flexGrow: 1, 
             display: 'flex', 
             flexDirection: 'column', 
@@ -347,6 +350,7 @@ const Dashboard = () => {
         </Box>
       </Box>
     </Box>
+    </>
   );
 };
 

@@ -5,14 +5,20 @@ import { Link } from "react-router-dom";
 import { 
     IconArrowLeft, IconArrowRight,IconFileText, IconMail, IconKey, IconCreditCard, 
     IconFilter, IconCircleCheck, IconCircleX,  
-    IconChevronRight, 
+    IconChevronRight,
+    IconUpload,
+    IconCopy,
+    IconWorld,
+    IconShieldCheck,
+    IconShieldX, 
 } from '@tabler/icons-react';
 import { 
     Box, Container, Group, Text, Paper, SimpleGrid, 
     Tabs, Checkbox, Button, ThemeIcon, Badge, rem, Stack, ActionIcon,
+    Divider,
 } from "@mantine/core";
 
-import Header from "../components/Header";
+// import Header from "../components/Header";
 import SummaryCard from "../components/SummaryCard"; 
 
 const deviceData = {
@@ -76,6 +82,7 @@ const sensitiveDataItems = [
 const violationItems = [
   {
     id: 1,
+    icon: IconUpload,
     type: "File Upload",
     app: "Chrome",
     destination: "drive.google.com",
@@ -85,6 +92,7 @@ const violationItems = [
   },
   {
     id: 2,
+    icon: IconCopy,
     type: "Copy to Clipboard",
     app: "Excel",
     destination: "System Clipboard",
@@ -94,6 +102,7 @@ const violationItems = [
   },
   {
     id: 3,
+    icon: IconMail,
     type: "Email Attachment",
     app: "Outlook",
     destination: "external@company.com",
@@ -103,6 +112,7 @@ const violationItems = [
   },
   {
     id: 4,
+    icon: IconWorld,
     type: "Web Upload",
     app: "Firefox",
     destination: "dropbox.com",
@@ -134,10 +144,6 @@ const getViolationStatusStyle = (status: string) => {
     return { color: 'teal', text: 'Allowed', icon: IconCircleCheck };
 };
 
-// src/pages/DeviceDetail.tsx (Replace or augment your existing data structures)
-
-// New Structure reflecting the grouped timeline
-// src/pages/DeviceDetail.tsx (New data structure reflecting the timeline grouping)
 
 const dataTraversalGroups = [
   {
@@ -227,12 +233,14 @@ const DeviceDetail = () => {
   return (
     <Box 
         style={{ 
-            minHeight: "100vh", 
-            backgroundColor: "var(--mantine-color-dark-8)", 
+            minHeight: "100vh",
+            width: "70%",
+            // backgroundColor: "var(--mantine-color-dark-8)", 
             color: "white" 
         }}
     >
-      <Header />
+    
+      {/* <Header /> */}
 
       <Container size="xl" py="lg">
         {/* Back Link */}
@@ -298,13 +306,18 @@ const DeviceDetail = () => {
             onChange={setActiveTab}
             color="cyan" 
             variant="pills"
-            radius="sm"
+            radius="md"
             mb="xl" 
         >
-            <Tabs.List style={{ backgroundColor: 'var(--mantine-color-dark-7)', padding: rem(4), borderRadius: rem(8), border: '1px solid var(--mantine-color-dark-4)' }}>
-                <Tabs.Tab value="sensitive" fw={600} style={{ flex: 1 }}>Sensitive Data</Tabs.Tab>
-                <Tabs.Tab value="violations" fw={600} style={{ flex: 1 }}>Violations ({device.violations})</Tabs.Tab>
-                <Tabs.Tab value="traversal" fw={600} style={{ flex: 1 }}>Data Traversal ({device.dataEvents})</Tabs.Tab>
+            <Tabs.List 
+                style={{ backgroundColor: 'var(--mantine-color-dark-7)', 
+                         padding: rem(4), 
+                         borderRadius: rem(8), 
+                         border: '1px solid var(--mantine-color-dark-4)'
+            }}>
+                <Tabs.Tab value="sensitive" fw={600} >Sensitive Data</Tabs.Tab>
+                <Tabs.Tab value="violations" fw={600}>Violations ({device.violations})</Tabs.Tab>
+                <Tabs.Tab value="traversal" fw={600}>Data Traversal ({device.dataEvents})</Tabs.Tab>
             </Tabs.List>
 
             {/* --- TAB 1: SENSITIVE DATA --- */}
@@ -325,7 +338,7 @@ const DeviceDetail = () => {
                     {/* Select All Row (Linked to state) */}
                     <Group p="sm" gap="sm" style={{ borderBottom: '1px solid var(--mantine-color-dark-4)', backgroundColor: 'var(--mantine-color-dark-6)' }}>
                         <Checkbox 
-                            color="gray" 
+                            color="cyan" 
                             size="sm" 
                             ml="xs" 
                             checked={allSelected}
@@ -353,7 +366,7 @@ const DeviceDetail = () => {
                                 >
                                     <Group align="flex-start" wrap="nowrap">
                                         <Checkbox 
-                                            color="gray" 
+                                            color="cyan" 
                                             mt={rem(4)} 
                                             size="sm"
                                             checked={isSelected} 
@@ -415,7 +428,7 @@ const DeviceDetail = () => {
                     
                     {/* Pagination Footer */}
                     <Group justify="space-between" p="md">
-                        <Text size="xs" c="dimmed">Showing 1 to 4 of 7 results</Text>
+                        <Text size="sm" c="dimmed">Showing <span style={{color:'white'}}>1</span> to <span style={{color:'white'}}>4</span> of <span style={{color:'white'}}>7</span> results</Text>
                         <Group gap={5}>
                             <ActionIcon variant="default" size="sm" disabled><IconChevronRight size={14} style={{transform: 'rotate(180deg)'}} /></ActionIcon>
                             <Button size="xs" variant="filled" color="cyan">1</Button>
@@ -427,6 +440,7 @@ const DeviceDetail = () => {
             </Tabs.Panel>
 
             {/* --- TAB 2: VIOLATIONS --- */}
+
             <Tabs.Panel value="violations" mt="md">
                 <Paper withBorder radius="md" style={{ backgroundColor: 'var(--mantine-color-dark-7)', borderColor: 'var(--mantine-color-dark-4)' }}>
                     
@@ -438,29 +452,41 @@ const DeviceDetail = () => {
 
                     {/* Violation Items List */}
                     <Stack gap={0}>
-                        {violationItems.map((item) => {
+                        {violationItems.map((item, index) => {
                             const statusStyle = getViolationStatusStyle(item.status);
+                            // Assume item.icon is the React component itself (e.g., IconUpload)
+                            const IconComponent = item.icon; 
+                            
                             return (
-                                // We remove the manual <div> and use the Map structure to handle the divider
                                 <div key={item.id}>
                                     <Group justify="space-between" p="md" align="center">
-                                        {/* Left Side: Type, App, Destination, Time */}
-                                        <Stack gap={rem(2)}> {/* TIGHTENED GAP */}
-                                            {/* Row 1: Type, via, App */}
-                                            <Group gap="xs" style={{ marginBottom: rem(2) }}>
-                                                <Text fw={300} size="md" c="white" style={{ lineHeight: 1 }}>{item.type}</Text>
-                                                <Text size="xs" c="dimmed">via</Text>
-                                                <Text size="sm" c="white" style={{ lineHeight: 1 }}>{item.app}</Text>
-                                            </Group>
+                                        
+                                        {/* Left Side: Icon, Type, App, Destination, Time */}
+                                        <Group gap={rem(16)} align="flex-start" wrap="nowrap">
                                             
-                                            {/* Row 2: Destination and Data Type (Allowing text to wrap) */}
-                                            <Text size="sm" c="dimmed" style={{ lineHeight: 1.2 }}>
-                                                {item.destination} • {item.dataType}
-                                            </Text>
+                                            {/* ICON SLOT ADDED HERE */}
+                                            <ThemeIcon size={42} radius="md" color="dark.4" variant="filled">
+                                                <IconComponent size={20} color="var(--mantine-color-gray-5)" style={{ flexShrink: 0, marginTop: rem(2) }} />
+
+                                            </ThemeIcon>
                                             
-                                            {/* Row 3: Time */}
-                                            <Text size="xs" c="dimmed">{item.time}</Text>
-                                        </Stack>
+                                            <Stack gap={rem(2)}> {/* TIGHTENED GAP */}
+                                                {/* Row 1: Type, via, App */}
+                                                <Group gap="xs" style={{ marginBottom: rem(2) }}>
+                                                    <Text fw={600} size="sm" c="white" style={{ lineHeight: 1 }}>{item.type}</Text>
+                                                    <Text size="xs" c="dimmed">via</Text>
+                                                    <Text size="sm" c="white" style={{ lineHeight: 1 }}>{item.app}</Text>
+                                                </Group>
+                                                
+                                                {/* Row 2: Destination and Data Type */}
+                                                <Text size="sm" c="dimmed" style={{ lineHeight: 1.2 }}>
+                                                    {item.destination} • {item.dataType}
+                                                </Text>
+                                                
+                                                {/* Row 3: Time */}
+                                                <Text size="xs" c="dimmed">{item.time}</Text>
+                                            </Stack>
+                                        </Group>
 
                                         {/* Right Side: Badge and Button */}
                                         <Group>
@@ -473,12 +499,17 @@ const DeviceDetail = () => {
                                             >
                                                 {statusStyle.text.toUpperCase()}
                                             </Badge>
-                                                
-                                                <Button variant="subtle" size="xs" color="cyan">Not a Violation</Button>
                                             
+                                                <Button variant="subtle" size="xs" color="cyan">
+                                                    <Group gap={rem(6)}  style={{ height: '100%', alignItems: 'center' }}>
+                                                        <IconShieldCheck size={15} color="cyan" style={{ flexShrink: 0 }}/>
+                                                        <Text span size="xs" fw={600}>Not a Violation</Text>
+                                                    </Group>
+                                                </Button>
+
                                         </Group>
                                     </Group>
-                                    {/* Removed manual divider, relying on Stack divider */}
+                                    {index < violationItems.length - 1 && <Divider color="var(--mantine-color-dark-4)" />}
                                 </div>
                             );
                         })}
@@ -560,8 +591,11 @@ const DeviceDetail = () => {
                                                     >
                                                         {actionStatus.text}
                                                     </Badge>
-                                                    <Button variant="subtle" size="xs" color="gray" style={{ whiteSpace: 'nowrap' }}>
-                                                        {event.action}
+                                                    <Button variant="subtle" size="xs" color="red" style={{ whiteSpace: 'nowrap' }}>
+                                                        <Group gap={rem(6)}  style={{ height: '100%', alignItems: 'center' }}>
+                                                            <IconShieldX size={15} color="red" style={{ flexShrink: 0 }}/>
+                                                            {event.action}
+                                                        </Group>
                                                     </Button>
                                                 </Group>
                                             </Group>
@@ -574,7 +608,7 @@ const DeviceDetail = () => {
                     
                     {/* Pagination Footer */}
                     <Group justify="space-between" p="md" style={{ borderTop: '1px solid var(--mantine-color-dark-4)' }}>
-                        <Text size="xs" c="dimmed">Showing 1 to 4 of 14 results</Text>
+                        <Text size="sm" c="dimmed">Showing <span style={{color:'white'}}>1</span> to <span style={{color:'white'}}>4</span> of <span style={{color:'white'}}>14</span> results</Text>
                         <Group gap={5}>
                             <ActionIcon variant="default" size="sm" disabled><IconChevronRight size={14} style={{transform: 'rotate(180deg)'}} /></ActionIcon>
                             <Button size="xs" variant="filled" color="cyan">1</Button>
@@ -589,6 +623,7 @@ const DeviceDetail = () => {
         </Tabs>
 
       </Container>
+    
     </Box>
   );
 };

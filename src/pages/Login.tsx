@@ -1,9 +1,10 @@
 
 import { useNavigate } from "react-router-dom";
-import { Shield, Lock } from "lucide-react";
+import { Lock } from "lucide-react";
 import { GoogleButton } from "../components/GoogleButton";
 import { SSOButton } from "../components/SSOButton";
 import { Card, Stack, Title, Text, Center, Box, Divider, Group } from "@mantine/core";
+import { IconShield } from "@tabler/icons-react";
 
 // TODO : Fix the sheild and the font family
 
@@ -32,7 +33,7 @@ const Login = () => {
             bg="#0c8599" 
             style={{ borderRadius: "14px" }}
           >
-            <Shield size={30} strokeWidth={1.4} color="#66d9e8" />
+            <IconShield size={30} strokeWidth={1.4} color="#66d9e8" />
           </Center>
 
           <Stack gap={2}>
