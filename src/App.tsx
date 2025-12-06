@@ -8,7 +8,7 @@ import { theme } from "./utils/mantine-theme";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import DeviceDetail from "./pages/DeviceDetail";
-import Header from "./components/Header";
+// import Header from "./components/Header";
 
 const queryClient = new QueryClient();
 
