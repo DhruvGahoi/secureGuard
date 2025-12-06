@@ -28,7 +28,7 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from '@mantine/hooks'; // Hook for modal state
 
-// import Header from "../components/Header"; 
+import Header from "../components/Header"; 
 import StatCard from "../components/StatCard";
 import DeviceRow from "../components/DeviceRow"; 
 import DeleteConfirmationModal from "../components/DeleteConfirmationModal"; // Imported Modal
@@ -84,7 +84,7 @@ const Dashboard = () => {
 
   return (
     <>
-    {/* <Header /> */}
+    <Header />
     <Box
       style={{
         minHeight: "100vh",

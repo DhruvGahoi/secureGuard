@@ -27,7 +27,7 @@ export default function App() {
             background: "var(--mantine-color-dark-9)", 
           }}
         >
-          <Header />
+          {/* <Header /> */}
           <BrowserRouter>
             <Routes>
               

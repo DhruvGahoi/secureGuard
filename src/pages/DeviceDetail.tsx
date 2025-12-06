@@ -1,5 +1,3 @@
-// src/pages/DeviceDetail.tsx
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { 
@@ -18,8 +16,8 @@ import {
     Divider,
 } from "@mantine/core";
 
-// import Header from "../components/Header";
 import SummaryCard from "../components/SummaryCard"; 
+import Header from "../components/Header";
 
 const deviceData = {
   "dev-001": {
@@ -231,6 +229,8 @@ const DeviceDetail = () => {
   const deviceStatus = getStatusColor(device.status);
 
   return (
+    <>
+    <Header />
     <Box 
         style={{ 
             minHeight: "100vh",
@@ -240,7 +240,7 @@ const DeviceDetail = () => {
         }}
     >
     
-      {/* <Header /> */}
+      
 
       <Container size="xl" py="lg">
         {/* Back Link */}
@@ -500,12 +500,12 @@ const DeviceDetail = () => {
                                                 {statusStyle.text.toUpperCase()}
                                             </Badge>
                                             
-                                                <Button variant="subtle" size="xs" color="cyan">
-                                                    <Group gap={rem(6)}  style={{ height: '100%', alignItems: 'center' }}>
-                                                        <IconShieldCheck size={15} color="cyan" style={{ flexShrink: 0 }}/>
-                                                        <Text span size="xs" fw={600}>Not a Violation</Text>
-                                                    </Group>
-                                                </Button>
+                                            <Button variant="subtle" size="xs" color="cyan">
+                                                <Group gap={rem(6)}  style={{ height: '100%', alignItems: 'center' }}>
+                                                    <IconShieldCheck size={15} color="cyan" style={{ flexShrink: 0 }}/>
+                                                    <Text span size="xs" fw={600}>Not a Violation</Text>
+                                                </Group>
+                                            </Button>
 
                                         </Group>
                                     </Group>
@@ -591,7 +591,8 @@ const DeviceDetail = () => {
                                                     >
                                                         {actionStatus.text}
                                                     </Badge>
-                                                    <Button variant="subtle" size="xs" color="red" style={{ whiteSpace: 'nowrap' }}>
+                                                    
+                                                    <Button variant="subtle" size="xs" color="red">
                                                         <Group gap={rem(6)}  style={{ height: '100%', alignItems: 'center' }}>
                                                             <IconShieldX size={15} color="red" style={{ flexShrink: 0 }}/>
                                                             {event.action}
@@ -625,6 +626,7 @@ const DeviceDetail = () => {
       </Container>
     
     </Box>
+    </>
   );
 };
 
