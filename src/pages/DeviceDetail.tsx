@@ -1,5 +1,3 @@
-// src/pages/DeviceDetail.tsx
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { 
@@ -21,9 +19,8 @@ import { useDisclosure } from '@mantine/hooks';
 
 import SummaryCard from "../components/SummaryCard"; 
 import Header from "../components/Header";
-import ActionConfirmationModal from "../components/ActionConfimationModal"; // Assuming this is correct
+import ActionConfirmationModal from "../components/ActionConfimationModal";
 
-// --- MOCK DATA ---
 const deviceData = {
   "dev-001": {
     name: "MacBook Pro - John",
@@ -100,7 +97,6 @@ const dataTraversalGroups = [
 ];
 
 
-// --- HELPER FUNCTIONS ---
 const getStatusColor = (status: 'online' | 'warning' | 'offline') => {
     if (status === 'online') return { color: 'green', text: 'ONLINE' };
     if (status === 'warning') return { color: 'yellow', text: 'WARNING' };
@@ -125,7 +121,6 @@ const getActionStatusStyle = (status: 'SUCCESS' | 'DENIED') => {
     if (status === 'DENIED') return { color: 'red', text: 'DENIED', icon: IconCircleX };
     return { color: 'teal', text: 'SUCCESS', icon: IconCircleCheck };
 };
-// --- END HELPERS ---
 
 const DeviceDetail = () => {
 //   const { id } = useParams();
@@ -192,7 +187,6 @@ const DeviceDetail = () => {
         style={{ 
             minHeight: "100vh",
             width: "70%",
-            // backgroundColor: "var(--mantine-color-dark-8)", 
             color: "white" 
         }}
     >
@@ -203,7 +197,6 @@ const DeviceDetail = () => {
               onClose={closeActionModal}
               onConfirm={handleActionConfirm}
               actionType={currentActionType}
-              // Contextual data extraction for the modal:
               titleContext={currentActionItem.type || 'Data Event'}
               details={[
                   `${currentActionItem.app} -> ${currentActionItem.destination}`,
@@ -411,7 +404,6 @@ const DeviceDetail = () => {
             </Tabs.Panel>
 
             {/* --- TAB 2: VIOLATIONS --- */}
-
             <Tabs.Panel value="violations" mt="md">
                 <Paper withBorder radius="md" style={{ backgroundColor: 'var(--mantine-color-dark-7)', borderColor: 'var(--mantine-color-dark-4)' }}>
                     
@@ -502,7 +494,6 @@ const DeviceDetail = () => {
                     </Group>
                 </Paper>
             </Tabs.Panel>
-
 
             {/* --- TAB 3: DATA TRAVERSAL --- */}
             <Tabs.Panel value="traversal" mt="md">

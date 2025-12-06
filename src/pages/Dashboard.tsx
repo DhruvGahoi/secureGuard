@@ -1,5 +1,3 @@
-// src/pages/Dashboard.tsx
-
 import { useState } from "react";
 import {
   IconDeviceDesktop,
@@ -8,7 +6,7 @@ import {
   IconShieldLock,
   IconChevronRight,
   IconDownload,
-  IconDeviceLaptop, // Renaming to avoid conflict
+  IconDeviceLaptop,
   IconTrash
 } from '@tabler/icons-react';
 import {
@@ -26,12 +24,12 @@ import {
   Divider,
   Button,
 } from "@mantine/core";
-import { useDisclosure } from '@mantine/hooks'; // Hook for modal state
+import { useDisclosure } from '@mantine/hooks';
 
 import Header from "../components/Header"; 
 import StatCard from "../components/StatCard";
 import DeviceRow from "../components/DeviceRow"; 
-import DeleteConfirmationModal from "../components/DeleteConfirmationModal"; // Imported Modal
+import DeleteConfirmationModal from "../components/DeleteConfirmationModal";
 
 const devicesData = [
     { id: 1, name: "MacBook Pro - John", ip: "192.168.1.105", time: "Just now", type: "laptop", violations: 12, sensitive: 156, status: "online" as const},
@@ -45,7 +43,6 @@ const devicesData = [
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState<"devices" | "install">("devices");
   
-  // STATE MANAGEMENT FOR SELECTION AND DELETION
   const [selectedDeviceIds, setSelectedDeviceIds] = useState<number[]>([]);
   const [modalOpened, { open: openModal, close: closeModal }] = useDisclosure(false);
   
@@ -54,7 +51,6 @@ const Dashboard = () => {
   const allSelected = selectedCount === allDeviceIds.length && allDeviceIds.length > 0;
   const showDeleteButton = selectedCount > 0;
 
-  // HANDLERS FOR SELECTION
   const toggleAllDevices = () => {
     if (allSelected) {
       setSelectedDeviceIds([]);
@@ -71,10 +67,8 @@ const Dashboard = () => {
     );
   };
   
-  // HANDLER FOR MODAL CONFIRMATION
   const handleDeviceDeletion = () => {
       console.log(`Confirmed deletion of ${selectedCount} devices.`);
-      // Logic to actually delete selectedDeviceIds goes here
       setSelectedDeviceIds([]);
       closeModal();
   };
@@ -88,15 +82,10 @@ const Dashboard = () => {
     <Box
       style={{
         minHeight: "100vh",
-        // backgroundColor: "var(--mantine-color-dark-8)", 
-        // color: "white",
         paddingBottom: 48,
         width: "70%",
-        // display: 'flex', 
-        // flexDirection: 'column',
       }}
     >
-      {/* 1. DELETE CONFIRMATION MODAL */}
       <DeleteConfirmationModal
           opened={modalOpened}
           onClose={closeModal}
@@ -110,9 +99,7 @@ const Dashboard = () => {
       <Box 
         px={innerPadding} 
         pt="lg" 
-        style={{ 
-            // width: '100%', 
-            // maxWidth: '100vw', 
+        style={{
             flexGrow: 1, 
             display: 'flex', 
             flexDirection: 'column', 
@@ -176,20 +163,18 @@ const Dashboard = () => {
                         flexGrow: 1,
                     }}
                 >
-                    {/* Header Row with Delete Button */}
                     <Group justify="space-between" mb="lg">
                         <div>
                             <Text size="lg" fw={700} c="white">Connected Devices</Text>
                             <Text size="sm" c="dimmed">Monitor and manage all devices with DLP agents installed</Text>
                         </div>
                         
-                        {/* CONDITIONAL DELETE BUTTON */}
                         {showDeleteButton && (
                             <Button 
                                 variant="filled" 
                                 color="red"
                                 radius="md"
-                                onClick={openModal} // Opens the delete confirmation modal
+                                onClick={openModal}
                                 leftSection={<IconTrash size={14} />}
                             >
                                 Delete Selected ({selectedCount})
@@ -197,7 +182,6 @@ const Dashboard = () => {
                         )}
                     </Group>
 
-                    {/* Select All Row */}
                     <Paper 
                         withBorder 
                         p="xs" 
@@ -218,13 +202,11 @@ const Dashboard = () => {
                         </Group>
                     </Paper>
 
-                    {/* The Device Rows */}
                     <Stack gap={0} style={{ flexGrow: 1 }}> 
                         {devicesData.map((device) => (
                             <DeviceRow 
                                 key={device.id} 
                                 device={device} 
-                                // Pass selection state and toggle handler to the row
                                 isSelected={selectedDeviceIds.includes(device.id)}
                                 onToggle={() => toggleDevice(device.id)}
                             />
