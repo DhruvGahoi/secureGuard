@@ -6,8 +6,6 @@ import { SSOButton } from "../components/SSOButton";
 import { Card, Stack, Title, Text, Center, Box, Divider, Group } from "@mantine/core";
 import { IconShield } from "@tabler/icons-react";
 
-// TODO : Fix the sheild and the font family
-
 const Login = () => {
   const navigate = useNavigate();
   const handleLogin = () => navigate("/dashboard");
@@ -25,7 +23,6 @@ const Login = () => {
     >
       <Stack gap="xl" align="center">
         
-        {/* Logo */}
         <Group gap="md" mb="md">
           <Center 
             w={56} 
@@ -42,7 +39,6 @@ const Login = () => {
           </Stack>
         </Group>
 
-        {/* Card */}
         <Card
           shadow="none"
           p="xl"
@@ -69,7 +65,6 @@ const Login = () => {
           </Stack>
         </Card>
 
-        {/* Footer */}
         <Group gap={6}>
           <Lock size={12} color="rgba(255, 255, 255, 0.5)" />
           <Text size="xs" c="dimmed">

@@ -11,7 +11,6 @@ const Header = () => {
 
     return (
         <Box 
-        
             style={{ 
                 backgroundColor: 'var(--mantine-color-dark-8)', 
                 borderBottom: '1px solid var(--mantine-color-dark-4)',
