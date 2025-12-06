@@ -1,8 +1,10 @@
+// src/pages/DeviceDetail.tsx
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { 
     IconArrowLeft, IconArrowRight,IconFileText, IconMail, IconKey, IconCreditCard, 
-    IconFilter, IconCircleCheck, IconCircleX,  
+    IconFilter, IconCircleCheck, IconCircleX, 
     IconChevronRight,
     IconUpload,
     IconCopy,
@@ -15,10 +17,13 @@ import {
     Tabs, Checkbox, Button, ThemeIcon, Badge, rem, Stack, ActionIcon,
     Divider,
 } from "@mantine/core";
+import { useDisclosure } from '@mantine/hooks';
 
 import SummaryCard from "../components/SummaryCard"; 
 import Header from "../components/Header";
+import ActionConfirmationModal from "../components/ActionConfimationModal"; // Assuming this is correct
 
+// --- MOCK DATA ---
 const deviceData = {
   "dev-001": {
     name: "MacBook Pro - John",
@@ -35,112 +40,18 @@ const deviceData = {
 };
 
 const sensitiveDataItems = [
-  {
-    id: 1,
-    icon: IconFileText,
-    name: "Social Security Numbers",
-    severity: "HIGH",
-    category: "PII",
-    path: "/Users/john/Documents/HR/",
-    files: ["EMPLOYEES.XLSX", "PAYROLL_2024.CSV", "CONTRACTS.DOCX"],
-    instances: 23,
-  },
-  {
-    id: 2,
-    icon: IconCreditCard,
-    name: "Credit Card Numbers",
-    severity: "CRITICAL",
-    category: "FINANCIAL",
-    path: "/Users/john/Downloads/",
-    files: ["ORDERS.CSV", "CUSTOMER_DATA.XLSX"],
-    instances: 8,
-  },
-  {
-    id: 3,
-    icon: IconMail,
-    name: "Email Addresses",
-    severity: "MEDIUM",
-    category: "PII",
-    path: "/Users/john/Documents/Marketing/",
-    files: ["LEADS.CSV", "CONTACTS.XLSX", "NEWSLETTER.TXT"],
-    instances: 156,
-  },
-  {
-    id: 4,
-    icon: IconKey,
-    name: "API Keys & Secrets",
-    severity: "CRITICAL",
-    category: "CREDENTIALS",
-    path: "/Users/john/Projects/",
-    files: [".ENV", "CONFIG.JSON", "SECRETS.YAML"],
-    instances: 12,
-  },
+  { id: 1, icon: IconFileText, name: "Social Security Numbers", severity: "HIGH", category: "PII", path: "/Users/john/Documents/HR/", files: ["EMPLOYEES.XLSX", "PAYROLL_2024.CSV", "CONTRACTS.DOCX"], instances: 23, },
+  { id: 2, icon: IconCreditCard, name: "Credit Card Numbers", severity: "CRITICAL", category: "FINANCIAL", path: "/Users/john/Downloads/", files: ["ORDERS.CSV", "CUSTOMER_DATA.XLSX"], instances: 8, },
+  { id: 3, icon: IconMail, name: "Email Addresses", severity: "MEDIUM", category: "PII", path: "/Users/john/Documents/Marketing/", files: ["LEADS.CSV", "CONTACTS.XLSX", "NEWSLETTER.TXT"], instances: 156, },
+  { id: 4, icon: IconKey, name: "API Keys & Secrets", severity: "CRITICAL", category: "CREDENTIALS", path: "/Users/john/Projects/", files: [".ENV", "CONFIG.JSON", "SECRETS.YAML"], instances: 12, },
 ];
 
 const violationItems = [
-  {
-    id: 1,
-    icon: IconUpload,
-    type: "File Upload",
-    app: "Chrome",
-    destination: "drive.google.com",
-    dataType: "Credit Card Numbers",
-    time: "Today, 2:34 PM",
-    status: "blocked",
-  },
-  {
-    id: 2,
-    icon: IconCopy,
-    type: "Copy to Clipboard",
-    app: "Excel",
-    destination: "System Clipboard",
-    dataType: "Social Security Numbers",
-    time: "Today, 11:20 AM",
-    status: "allowed",
-  },
-  {
-    id: 3,
-    icon: IconMail,
-    type: "Email Attachment",
-    app: "Outlook",
-    destination: "external@company.com",
-    dataType: "Financial Data",
-    time: "Yesterday, 4:15 PM",
-    status: "blocked",
-  },
-  {
-    id: 4,
-    icon: IconWorld,
-    type: "Web Upload",
-    app: "Firefox",
-    destination: "dropbox.com",
-    dataType: "Customer PII",
-    time: "Yesterday, 10:30 AM",
-    status: "blocked",
-  }
+  { id: 1, icon: IconUpload, type: "File Upload", app: "Chrome", destination: "drive.google.com", dataType: "Credit Card Numbers", time: "Today, 2:34 PM", status: "blocked", },
+  { id: 2, icon: IconCopy, type: "Copy to Clipboard", app: "Excel", destination: "System Clipboard", dataType: "Social Security Numbers", time: "Today, 11:20 AM", status: "allowed", },
+  { id: 3, icon: IconMail, type: "Email Attachment", app: "Outlook", destination: "external@company.com", dataType: "Financial Data", time: "Yesterday, 4:15 PM", status: "blocked", },
+  { id: 4, icon: IconWorld, type: "Web Upload", app: "Firefox", destination: "dropbox.com", dataType: "Customer PII", time: "Yesterday, 10:30 AM", status: "blocked", }
 ];
-
-
-// --- HELPER FUNCTIONS ---
-const getStatusColor = (status: 'online' | 'warning' | 'offline') => {
-    if (status === 'online') return { color: 'green', text: 'ONLINE' };
-    if (status === 'warning') return { color: 'yellow', text: 'WARNING' };
-    return { color: 'gray', text: 'OFFLINE' };
-};
-
-const getSeverityStyle = (severity: string) => {
-    switch (severity) {
-        case "CRITICAL": return { color: 'red', text: 'CRITICAL', bg: 'rgba(250, 82, 82, 0.15)' };
-        case "HIGH": return { color: 'orange', text: 'HIGH', bg: 'rgba(253, 126, 20, 0.15)' };
-        case "MEDIUM": return { color: 'yellow', text: 'MEDIUM', bg: 'rgba(250, 176, 5, 0.15)' };
-        default: return { color: 'gray', text: 'LOW', bg: 'rgba(134, 142, 150, 0.15)' };
-    }
-};
-
-const getViolationStatusStyle = (status: string) => {
-    if (status === 'blocked') return { color: 'red', text: 'Blocked', icon: IconCircleX };
-    return { color: 'teal', text: 'Allowed', icon: IconCircleCheck };
-};
 
 
 const dataTraversalGroups = [
@@ -188,7 +99,28 @@ const dataTraversalGroups = [
   },
 ];
 
-// Helper function for action status colors (Must be added near other helpers)
+
+// --- HELPER FUNCTIONS ---
+const getStatusColor = (status: 'online' | 'warning' | 'offline') => {
+    if (status === 'online') return { color: 'green', text: 'ONLINE' };
+    if (status === 'warning') return { color: 'yellow', text: 'WARNING' };
+    return { color: 'gray', text: 'OFFLINE' };
+};
+
+const getSeverityStyle = (severity: string) => {
+    switch (severity) {
+        case "CRITICAL": return { color: 'red', text: 'CRITICAL', bg: 'rgba(250, 82, 82, 0.15)' };
+        case "HIGH": return { color: 'orange', text: 'HIGH', bg: 'rgba(253, 126, 20, 0.15)' };
+        case "MEDIUM": return { color: 'yellow', text: 'MEDIUM', bg: 'rgba(250, 176, 5, 0.15)' };
+        default: return { color: 'gray', text: 'LOW', bg: 'rgba(134, 142, 150, 0.15)' };
+    }
+};
+
+const getViolationStatusStyle = (status: string) => {
+    if (status === 'blocked') return { color: 'red', text: 'Blocked', icon: IconCircleX };
+    return { color: 'teal', text: 'Allowed', icon: IconCircleCheck };
+};
+
 const getActionStatusStyle = (status: 'SUCCESS' | 'DENIED') => {
     if (status === 'DENIED') return { color: 'red', text: 'DENIED', icon: IconCircleX };
     return { color: 'teal', text: 'SUCCESS', icon: IconCircleCheck };
@@ -201,11 +133,12 @@ const DeviceDetail = () => {
   
   // 1. STATE MANAGEMENT: Track the IDs of selected items
   const [selectedItems, setSelectedItems] = useState<number[]>([]); 
+//   const [_, setSelectedViolationIds] = useState<number[]>([]); 
 
   // Derived state to check if all visible items are selected
   const allSelected = selectedItems.length === sensitiveDataItems.length && sensitiveDataItems.length > 0;
   
-  // HANDLERS
+  // HANDLERS for Sensitive Data
   const toggleAll = () => {
     if (allSelected) {
       setSelectedItems([]);
@@ -223,8 +156,32 @@ const DeviceDetail = () => {
     );
   };
   
+  // Handlers for Violations Selection
+//   const toggleViolationItem = (id: number) => {
+//     setSelectedViolationIds(prev => prev.includes(id) ? prev.filter(itemId => itemId !== id) : [...prev, id]);
+//   };
 
-  // In a real app, use the 'id' to fetch specific device data
+  // ACTION MODAL STATE AND HANDLERS
+  const [actionModalOpened, { open: openActionModal, close: closeActionModal }] = useDisclosure(false);
+  const [currentActionItem, setCurrentActionItem] = useState<any>(null); // Stores the item context
+  const [currentActionType, setCurrentActionType] = useState<'confirm_violation' | 'mark_not_violation'>('confirm_violation'); 
+  
+  // Handler to trigger modal and set context
+  const handleActionClick = (item: any, type: 'confirm_violation' | 'mark_not_violation') => {
+      setCurrentActionItem(item);
+      setCurrentActionType(type);
+      openActionModal();
+  };
+
+  // Final Confirmation Handler (called after user clicks Confirm in the modal)
+  const handleActionConfirm = () => {
+      if (currentActionItem && currentActionType) {
+          console.log(`Action: ${currentActionType} confirmed for item ID: ${currentActionItem.id}`);
+          // Close modal after confirmation
+          closeActionModal();
+      }
+  };
+  
   const device = deviceData["dev-001"]; 
   const deviceStatus = getStatusColor(device.status);
 
@@ -239,8 +196,22 @@ const DeviceDetail = () => {
             color: "white" 
         }}
     >
-    
-      
+      {/* 1. ACTION MODAL PLACEMENT */}
+      {currentActionItem && (
+          <ActionConfirmationModal
+              opened={actionModalOpened}
+              onClose={closeActionModal}
+              onConfirm={handleActionConfirm}
+              actionType={currentActionType}
+              // Contextual data extraction for the modal:
+              titleContext={currentActionItem.type || 'Data Event'}
+              details={[
+                  `${currentActionItem.app} -> ${currentActionItem.destination}`,
+                  `Data Type: ${currentActionItem.dataType}`,
+                  `Time: ${currentActionItem.time}`,
+              ].filter(Boolean)}
+          />
+      )}
 
       <Container size="xl" py="lg">
         {/* Back Link */}
@@ -454,7 +425,6 @@ const DeviceDetail = () => {
                     <Stack gap={0}>
                         {violationItems.map((item, index) => {
                             const statusStyle = getViolationStatusStyle(item.status);
-                            // Assume item.icon is the React component itself (e.g., IconUpload)
                             const IconComponent = item.icon; 
                             
                             return (
@@ -500,7 +470,12 @@ const DeviceDetail = () => {
                                                 {statusStyle.text.toUpperCase()}
                                             </Badge>
                                             
-                                            <Button variant="subtle" size="xs" color="cyan">
+                                            <Button 
+                                                variant="subtle" 
+                                                size="xs" 
+                                                color="cyan"
+                                                onClick={(e) => { e.stopPropagation(); handleActionClick(item, 'mark_not_violation'); }} // <-- NEW HANDLER
+                                            >
                                                 <Group gap={rem(6)}  style={{ height: '100%', alignItems: 'center' }}>
                                                     <IconShieldCheck size={15} color="cyan" style={{ flexShrink: 0 }}/>
                                                     <Text span size="xs" fw={600}>Not a Violation</Text>
@@ -559,7 +534,7 @@ const DeviceDetail = () => {
                                         return (
                                             <Group key={event.id} justify="space-between" align="flex-start" wrap="nowrap">
                                                 
-                                                {/* Left Column: Date & Source/Destination Flow */}
+                                                {/* Left Column: Date & Source/Destination */}
                                                 <Stack gap={rem(4)} style={{ width: '60%' }}>
                                                     <Text size="xs" c="dimmed" fw={500}>{event.date}</Text>
                                                     
@@ -592,7 +567,12 @@ const DeviceDetail = () => {
                                                         {actionStatus.text}
                                                     </Badge>
                                                     
-                                                    <Button variant="subtle" size="xs" color="red">
+                                                    <Button 
+                                                        variant="subtle" 
+                                                        size="xs" 
+                                                        color="red"
+                                                        onClick={() => handleActionClick(event, 'confirm_violation')} // <-- FUNCTIONAL FIX
+                                                    >
                                                         <Group gap={rem(6)}  style={{ height: '100%', alignItems: 'center' }}>
                                                             <IconShieldX size={15} color="red" style={{ flexShrink: 0 }}/>
                                                             {event.action}

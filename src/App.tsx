@@ -8,7 +8,6 @@ import { theme } from "./utils/mantine-theme";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import DeviceDetail from "./pages/DeviceDetail";
-// import Header from "./components/Header";
 
 const queryClient = new QueryClient();
 
@@ -27,10 +26,8 @@ export default function App() {
             background: "var(--mantine-color-dark-9)", 
           }}
         >
-          {/* <Header /> */}
           <BrowserRouter>
-            <Routes>
-              
+            <Routes>     
               <Route path="/" element={<Login />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/device/:id" element={<DeviceDetail />} />

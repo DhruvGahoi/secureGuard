@@ -9,7 +9,8 @@ import {
   IconChevronRight,
   IconDownload,
   IconDeviceLaptop, 
-  IconAlertTriangle as IconAlertTriangleTabler // Renaming to avoid conflict
+  IconAlertTriangle as IconAlertTriangleTabler, // Renaming to avoid conflict
+  IconTrash
 } from '@tabler/icons-react';
 import {
   Box,
@@ -190,7 +191,7 @@ const Dashboard = () => {
                                 color="red"
                                 radius="md"
                                 onClick={openModal} // Opens the delete confirmation modal
-                                leftSection={<IconAlertTriangleTabler size={14} />}
+                                leftSection={<IconTrash size={14} />}
                             >
                                 Delete Selected ({selectedCount})
                             </Button>
