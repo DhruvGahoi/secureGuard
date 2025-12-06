@@ -8,8 +8,7 @@ import {
   IconShieldLock,
   IconChevronRight,
   IconDownload,
-  IconDeviceLaptop, 
-  IconAlertTriangle as IconAlertTriangleTabler, // Renaming to avoid conflict
+  IconDeviceLaptop, // Renaming to avoid conflict
   IconTrash
 } from '@tabler/icons-react';
 import {
