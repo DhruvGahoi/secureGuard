@@ -29,7 +29,7 @@ This project was built as an assignment submission, focusing on clean architectu
 
 * **Frontend Framework**: React 18 (via Vite)
 * **Language**: TypeScript
-* **Styling**: Tailwind CSS (configured with PostCSS)
+* **Styling**: Mantine
 * **State Management**: React Context API / Hooks
 * **Routing**: React Router DOM
 * **Linting/Formatting**: ESLint, Prettier
@@ -40,7 +40,6 @@ This project was built as an assignment submission, focusing on clean architectu
 
 Follow these steps to set up the project locally:
 
-### 1. Clone the repository
 ```bash
     git clone [https://github.com/DhruvGahoi/secureGuard.git](https://github.com/DhruvGahoi/secureGuard.git)
     cd secureGuard

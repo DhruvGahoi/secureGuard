@@ -14,7 +14,6 @@ const queryClient = new QueryClient();
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      {/* FIX: Set defaultColorScheme to "dark" to enable the correct dark mode styles */}
       <MantineProvider theme={theme} defaultColorScheme="dark" >
         <Flex
           direction="column"
