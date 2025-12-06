@@ -61,7 +61,7 @@ const Login = () => {
               </Text>
             </Box>
 
-            <GoogleButton fullWidth>Continue with Google</GoogleButton>
+            <GoogleButton onClick={handleLogin} fullWidth>Continue with Google</GoogleButton>
 
             <Divider label="or" labelPosition="center" color="rgba(255, 255, 255, 0.2)" />
 

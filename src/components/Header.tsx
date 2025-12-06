@@ -1,7 +1,14 @@
 import { IconBell, IconSettings, IconUser, IconLogout, IconShield } from "@tabler/icons-react";
 import { Box, Container, Group, Text, Avatar, ActionIcon, Menu, rem } from "@mantine/core";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
+
+    const navigate = useNavigate();
+    const handleLogout = () => {
+        navigate('/');
+    }
+
     return (
         <Box 
         
@@ -57,7 +64,7 @@ const Header = () => {
                                 <Menu.Item 
                                     color="red" 
                                     leftSection={<IconLogout size={14} />}
-                                    onClick={() => console.log('Logging Out')}
+                                    onClick={handleLogout}
                                 >
                                     Log out
                                 </Menu.Item>
